@@ -14,11 +14,15 @@
 //==============================================================================
 /**
 */
-class BasicSamplerAudioProcessorEditor  : public juce::AudioProcessorEditor
+class BasicSamplerAudioProcessorEditor  : public juce::AudioProcessorEditor,
+                                          public juce::FileDragAndDropTarget
 {
 public:
     BasicSamplerAudioProcessorEditor (BasicSamplerAudioProcessor&);
     ~BasicSamplerAudioProcessorEditor() override;
+    
+    bool isInterestedInFileDrag (const juce::StringArray& files) override;
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;

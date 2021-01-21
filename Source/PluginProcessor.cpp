@@ -32,7 +32,7 @@ BasicSamplerAudioProcessor::BasicSamplerAudioProcessor()
 
 BasicSamplerAudioProcessor::~BasicSamplerAudioProcessor()
 {
-    mFormatReader = nullptr;
+//    mFormatReader = nullptr;
 }
 
 //==============================================================================
@@ -193,12 +193,29 @@ void BasicSamplerAudioProcessor::loadFile()
     
     if(chooser.browseForFileToOpen())
     {
+        mSampler.clearSounds();
         auto file = chooser.getResult();
-        mFormatReader = mFormatManager.createReaderFor(file);
+//        mFormatReader = mFormatManager.createReaderFor(file);
+        std::unique_ptr<juce::AudioFormatReader> reader (mFormatManager.createReaderFor(file));
+        
+        juce::BigInteger range;
+        range.setRange(0, 127, true);
+        
+        mSampler.addSound(new juce::SamplerSound("Sample", *reader, range, 60, 0.1, 0.1, 10.0));
     }
+}
+
+void BasicSamplerAudioProcessor::loadFile(const juce::String& path)
+{
+    mSampler.clearSounds();
+    
+    auto file = juce::File(path);
+    std::cout << file.getFileName() << std::endl;
+//    mFormatReader = mFormatManager.createReaderFor(file);
+    std::unique_ptr<juce::AudioFormatReader> reader (mFormatManager.createReaderFor(file));
     
     juce::BigInteger range;
     range.setRange(0, 127, true);
     
-    mSampler.addSound(new juce::SamplerSound("Sample", *mFormatReader, range, 60, 0.1, 0.1, 10.0));
+    mSampler.addSound(new juce::SamplerSound("Sample", *reader, range, 60, 0.1, 0.1, 10.0));
 }
